@@ -1,0 +1,55 @@
+阶段一：
+常用类：StringBuffer Date Math String
+集合框架：list，set，map，
+javaIO流：输入流，输出流，字符流，字节流,
+java网络编程： TCP，UDP，基于socket的基本使用，简单的client/server的设计
+java解析XML文件:dom4j,sax,jaxp
+java反射机制：java反射机制的概念，掌握class对象的使用
+
+阶段二：
+mysql：（单表多表查询：运算符，order_by，group_by,having,子查询），（mysql约束：非空，唯一（自增），主外键）,mysql导入导出
+powerdesigner:可以先了解了解
+
+JDBC(相当于用java连接数据库):了解概念，掌握核心接口和类，熟悉JDBC连接数据库的实现步骤，处理结果集，批处理（一次性操作多条数据），防止SQL注入问题
+
+JavaWEB:Http协议，（Tomcat WEB服务器：安装与启动，体系结构，掌握tomcat的配置，熟练进行web工程的部署），
+JSP/Serviet：了解Serviet的生命周期，了解serviet常用接口和类，配置serviet，了解JSP概念，动作指令，9个常用内置对象，EL和JSTL,自定义标签，监听器，过滤器
+，JSP分页，JSP上传文件
+
+AJAX：AJAX概念，java对象转化JSON
+XMLHttpRequest对象
+版本管理工具SVN
+
+
+阶段三
+Oracle
+
+Struts2：了解Struts2，配置Package，配置Action，（配置Result：了解result类型，会改变默认的result的类型），Struts2 serviet API,Struts2和from表单交互，
+OGNL，拦截器，国际化，上传下载，Struts2的标签
+
+Hibernate：了解hibernate的概念；hibernate配置文件；hibernate映射文件；基本增，删，改，查；实体对象的三种状态；关联映射：一对一，一对多，多对一，多对多；了解Lazy；HQL：实体查询，查询实体属性，参数绑定，排序，分组；hibernate注解；缓存：一级缓存，二级缓存
+
+Spring：了解spring；IOC思想；DI依赖注入；Bean生命周期；自动装配；集合注入；AOP概念；声明式事务处理；spring注解
+
+
+阶段四：
+Maven：简介；编译打包构建等；依赖管理；集成eclipse；maven中构建web工程
+springMVC：简介；handlerMapping；RequestMapping；springMVC参数传递；返回页面数据；适配器；拦截器；视图和模型；上传文件；springmvc ajax的使用，Struts2和springMVC区别
+Mybatis：简介；使用mybatis实现基本增删改查；注解方式实现；动态sql；多种参数传递；一对一；一对多；多对多；
+
+
+拓展课程：
+WEBservice
+serviet3.0
+工作流：JBPM或Activiti5
+权限管理：shiro
+display tag分页标签
+UML
+JSF
+页面静态化：freemarker
+weblogic
+网站搜索lucene
+页面缓存：OScache
+图片分离：jersey
+redis
+

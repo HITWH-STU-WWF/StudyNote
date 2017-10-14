@@ -1,0 +1,36 @@
+import time
+def gettime(func):      #不带参数
+    def translate(*args,**kwargs):
+        start=time.time()
+        print(args,'----',kwargs)
+        func(*args,**kwargs)
+        #记得带上*和**号，不带就相当于两个参数而已（对于func函数而言），不再是具有特殊意义的元组和字典
+        end=time.time()
+        print(start-end)
+    return translate
+
+def gettime_have(show):        #带参数
+    print('first entry '+show)
+    def _deco(func):
+        def translate(*args,**kwargs):
+            # start=time.time()
+            # print(args,'----',kwargs)
+            print('second entry '+show)
+            func(*args,**kwargs)
+            # end=time.time()
+            # print(start-end)
+        return translate
+    return _deco
+
+@gettime_have('three')
+@gettime_have('two')
+@gettime_have('one')
+#可以理解为越靠近函数的装饰器，其最外层越先执行,等外层的都执行完，然后再执行里层的，里层的是越远的（即越先调用的）越先执行
+def test(a,b):
+    print('start')
+    print(a,b)
+    time.sleep(2)
+    print('end')
+
+test(1,3)
+

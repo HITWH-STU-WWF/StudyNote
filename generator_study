@@ -1,0 +1,53 @@
+#def test():
+#	print('i am start')
+#	for i in range(5):
+#		print('i am run %d times'%(i))
+#		yield i
+#	print('i am end')
+#	return 'i am ok'	
+#
+#def test2():
+#	print(1)
+#	yield	'i am first run' 
+#	print(2)
+#	yield 'i am second run'	
+#
+#
+#c=test2()
+#for i in c:
+#	print(i)
+#
+#
+#a=test()
+#sum=0
+#print('i am use for to run ')
+#for i in a:
+#	print(sum,'----')
+#	print(i)
+#	sum=sum+1
+#
+#b=test()
+#print('i am use next() to run')
+#for i in range(6):
+#	print('next------',i)
+#	print(next(b))
+
+#def test3():
+#	r='11'
+#	print(r,'-------')
+#	n=yield r
+#	print(n,'========')
+#	print(r,'++++++++')
+#	yield n
+#a=test3()
+#print(next(a))
+#print('-----0000')
+#a.send(2)
+
+try:
+	try:
+		a=2/0
+	except:
+		raise 0
+except 0:
+	print('shi yin wei 0 cuowu')

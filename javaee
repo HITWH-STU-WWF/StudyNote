@@ -1,0 +1,21 @@
+javaee完整体系架构：https://segmentfault.com/a/1190000007090110
+JavaEE的13种核心技术规范：
+1、JDBC（Java Database）数据库连接
+2、JNDI（Java Naming and Directory Interfaces）Java 的命名和目录接口
+3、EJB（Enterprise JavaBean）
+4、RMI（Remote Method Invoke）远程方法调用
+5、Java IDL（Interface Description Language）/CORBA（Common Object Broker Architecture）Java 接口定义语言/公用对象请求代理程序体系结构
+6、JSP（Java Server Pages）
+7、Servlet
+8、XML（Extensible Markup Language）可扩展白标记语言
+9、JMS（Java Message Service）Java 消息服务
+10、JTA（Java Transaction API）Java 事务 API
+11、JTS（Java Transaction Service）Java 事务服务
+12、JavaMail
+13、JAF（JavaBean Activation Framework）
+
+JavaEE软件开发体系架构:
+两层架构：客户端（前台）和服务端（后台）
+三层架构：表示层、逻辑层、持久层（数据层）
+MVC：模型层（Model）、视图层（View）、控制层（Controller）
+基于JavaEE架构模式下的MVC

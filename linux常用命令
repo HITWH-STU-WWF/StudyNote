@@ -1,0 +1,170 @@
+*必须在英文模式下才可以拼出来
+通配符  ls *.cpp  	//列出所有c++文件
+        ls text?  	//列出所有以text开头，后面跟着一个字符的文件
+	ls text[1A]  	//列出所有以text开头，后面以1或A结尾的文件
+按一次tab补全命令，按两次列出所有的
+pwd   			//显示当前目录
+
+cd /目录名/   		 //进入什么目录，该目录不是根目录
+cd 目录名/		//进入一个主目录
+
+基本文件操作
+ls			//具体颜色代表的查书,目录蓝色
+ls -F			// 目录后面跟着/
+ls -a			//列出隐藏的文件
+ls -l  			//显示文件具体属性，包括权限,是 l注意
+ls -ld			//显示目录的属性
+ls -aF			//综合使用(其他类似)
+dir /目录名/			//也是列出目录下的
+vdir /目录名/../ 	//跟ls -l差不多
+
+cat 文件名1 文件名2...			//查看文件内容，通常是文本文件,必须到达了该文件的目录之下才访问得到
+cat -n 文件名				//带行号的显示内容
+more 文件名				//一页一页的显示文件内容，按回车向下滚动一行，按空格翻页，按Q退出
+head -n 行数 文件名			//用来指定显示文件开头的行数，不带-n 行数则默认显示开头 
+tail 					//用法和head类似,head和tail都会显示文件名，==>文件名<==
+less					//跟more差不多，比more更强大，添加了查找等功能，具体看书， /查找内容  
+
+grep 'hello word' 文件名1 文件名2..	//用来查找文件中含有关键字符的行，可以是关键字，关键句子等，若是多个词构成的，应该加''包含住搜索词	
+
+
+find 路径名 -name 文件名 -print 	//在指定范围内查到文件，并输出绝对路径，若在所有文字系统中寻找，可以使用 / 符号代替路径名	
+find /etc/ -name init.d -type d -print  //对文件类型进行了限定，具体type选项自己查书
+find . -mtime -1 -print          	//查找当前文件夹中，最近一天内修改过的文件， +n表示大于n天没，-n表示小于n天
+
+文件目录管理
+mkdir 路径名1 路径名2...    		//再指定路径下创建文件夹，可同事创建多个，路径名中应该
+如 mkdir ~/下载/test			//最后新建的目录后面一般不跟 / ，这条命令是创建一个test文件夹
+mkdir -p ~/test1/test2			//加上-p后，变成创建一个完整的目录，先创建test1，再在里面创建test2 当父目录不存在时，自动创建，而前面的不可以
+
+
+touch 新文件名				//在当前目录下创建一个空文件
+touch 旧文件名				//可以更新一个文件的创建日期和时间	
+
+mv -i 文件名 目录名			//将文件移动到指定目录下，如果存在相同的文件名，则会提示，y表覆盖，n表跳过，也可以移动目录，用法差不多
+mv -b 文件名 目录名			//将文件移动到指定目录下，如果存在相同的文件名，则将目标文件夹中的同名文件后面加上~
+mv 旧文件名 新文件名			//相当于重命名功能
+
+cp复制文件或目录到指定位置，用法与mv一致
+cp -r test/ 桌面/			//将test目录连同其中的文件一起复制到另一个目录下
+
+删除目录和文件
+rmdir 目录名		//删除空目录，很少使用
+rm -i 文件名		//文件名中应该包含文件所处路径，否则就是当前文件夹中，可以一次删除多个文件，不加-i也可以，但可能误删
+rm -r 目录名		//删除该目录和该目录下的所有文件，慎用
+rm -f 文件名		//与-i相比，所有的自动回复y，慎用
+
+
+修改文件的所有权
+sudo chown wuweifeng text1	//将文件text1的属主修改为wuweifeng
+sudo chown wuweifeng:root text1 	//将文件text1的属主修改为wuweifeng，属组修改为root组
+sudo chown :root text1			//将文件text1的属组修改为root组，不可以省略 :
+sudo chown -R wuweifeng iso/		//这条命令将目录iso/及其下面所有文件的属主修改为wuweifeng，加上-R
+chgrp					//只用于改变属组，较少用
+
+
+改变文件权限
+文件属主 u ，文件属组 g ，其他人 o ，所有人 a    读 r，写 w，执行 x
+sudo chmod g+w 文件名		//增加文件属组的写权限，- 表示删除什么权限呢
+sudo chmod ug=rw,o=r 文件名	//设置用户组ug读写权限，设置其他人读权限
+sudo o=u 文件名			//直接用=号也可以，这句话将其他人的权限设置为跟属主一样
+1 x   2 w   4 r 
+sudo chmod 711 文件名   //这句话将文件的所有权限给了属主，而其他人只有执行权 1表示x
+对Document/目录下的所有子文件与子目录执行相同的权限变更：
+chmod -R 700 Document/		加上-R
+
+ifconfig 查看ip地址
+
+n
+
+sudo update-alternatives --config python	~~~~~~~~~~~~~~~~~~~~~~
+
+ 方法三：删除配置文件，重启搜狗
+ubuntu下搜狗的配置文件在 ~/.config下的3个文件夹里：
+SogouPY、SogouPY.users、sogou-qimpanel
+删除这3个文件夹，然后重启搜狗。
+killall fcitx 
+killall sogou-qimpanel
+重启电脑
+或者fcitx
+
+# -*- coding: UTF-8 -*-
+
+github上传文件
+教程http://www.cnblogs.com/eedc/p/6168430.html
+git config user.email "这个是邮箱"
+git config user.name "你的名字"
+用户名：wwfwuweifeng
+密码： wf520..
+
+ifconfig -a	查看当前电脑的ip地址
+
+如果是用apt-get或者yum install安装的redis，可以直接通过下面的命令停止/启动/重启redis
+/etc/init.d/redis-server stop
+/etc/init.d/redis-server start
+/etc/init.d/redis-server restart
+
+
+
+
+redirs.conf 位置在 etc/redirs  现在已经设置为不会自动将数据存入硬盘了
+
+因为当前分支的最新提交落后于其对应的远程分支，所以我们先从远程库fetch到更新再和本地库合并，之后就可以git push操作了。
+git remote add origin https://github.com/username/test.git 
+$git fetch origin
+$git merge origin/master
+
+
+
+ifconfig  查看ip地址
+
+由于Ubuntu下已经有一个名叫node的库，因此Node.js在ubuntu下默认叫nodejs，需要额外处理一下
+http://stackoverflow.com/questions/18130164/nodejs-vs-node-on-ubuntu-12-04
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+
+
+linux的包管理有多种，除了rpm，apt等还有优秀的dpkg，下面是dpkg命令的详细使用教程。
+deb包的管理是比较优秀的包管理工具，用的linux系统有 debian ubuntu;
+dpkg命令的使用：
+dpkg -l 查看当前系统中已经安装的软件包的信息
+dpkg -L （软件包名称）查看系统中已经安装的软件文件的详细列表
+dpkg -s 查看已经安装的指定软件包的详细信息
+dpkg -S 查看系统中的某个文件属于那个软件包;
+dpkg -i *.deb文件的安装
+dpkg -r *.deb文件的卸载;
+dpkg -P 彻底的卸载 包括软件的配置文件等等
+查看没有安装的deb包命令
+dpkg -c 查询deb包文件中所包含的文件 rpm -qlp
+dpkg -I 查询deb包的详细信息
+添加说明：
+最常用的就是-i，-r。简单，安装／卸载。
+
+
+
+命令apt-get 会自动帮助用户下载并安装所需的程序包或代码。 apt-get 命令一般需要root权限执行，所有还要使用sudo 命令。！！！！加上sudo
+sudo apt-get [选项] 子命令
+apt-get update //获取最新的软件包列表，同步/etc/apt/sources.list 和/etc/apt/sources.list.d 中列出的源的索引，以确保用户能够获取最新的软件包。
+apt-get upgrade //更新当前系统中所有已经安装的软件包，并同时更新这些软件包所依赖的软件包
+apt-get  install //下载、安装软件包并自动解决依赖关系
+apt-get remove //卸载指定的软件包
+apt-get autoremove //自动卸载所有未使用的软件包
+apt-get purge  卸载指定的软件包及其配置文件
+apt-get source  //下载软件包的源代码
+apt-get clean  //清理已下载的软件包，实际上是清楚/var/cache/apt/archives 目录中的软件包
+apt-get autoclean  删除已经卸载的软件包备份
+
+在ubuntu16.04中，安装软件或什么的时候，如果发生报错，且能够发现是python语言（有可能软件包或者什么是用python写的），可以考虑考虑是不是因为python版本的原因，导致报错，因为python2和python3还是有一些语法区别的,可以通过修改默认的python版本来实现解决
+
+sudo python -m pip install –upgrade pip  对pip进行升级
+ps -ef|grep python 可以查看当前运行的python进程
+
+Linux下解压rar格式文件会出现“Parsing filters unsupported”这样的错误，原因是Linux版本默认不支持rar商业/非自由格式。要解决这个问题只需要安装unrar即可：
+sudo apt-get install unrar
+
+
+重启Apache
+sudo /etc/init.d/apache2 restart
+
+
+
+

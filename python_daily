@@ -1,0 +1,319 @@
+assert 断言句
+raise 引发一个异常
+try ...finally 
+
+python中，字典是可以映射到函数的,也可以映射到类中的函数，写法差不多
+def test1(sum):
+	print(sum)
+def test2(sum):
+	print("hello" +sum)
+dirtest={'a':test1,'b':test2}
+dirtest['a'](5)
+dirtest['b']('wwf')
+
+
+创建进程的类：Process([group [, target [, name [, args [, kwargs]]]]])，target表示调用对象，args表示调用对象的位置参数元组。kwargs表示调用对象的字典。name为别名。group实质上不使用。
+方法：is_alive()、join([timeout])、run()、start()、terminate()。其中，Process以start()启动某个进程。
+属性：authkey、daemon（要通过start()设置）、exitcode(进程在运行时为None、如果为–N，表示被信号N结束）、name、pid。其中daemon是父进程终止后自动终止，且自己不能产生新进程，必须在start()之前设置。
+
+class ClockProcess(multiprocessing.Process):
+    def __init__(self, interval):
+        multiprocessing.Process.__init__(self)
+        self.interval = interval
+ 
+    def run(self):
+      	pass
+
+p = ClockProcess(3)
+p.start()
+注：进程p调用start()时，自动调用run()
+
+p = multiprocessing.Process(target = worker, args = (3,))
+p.daemon = True		#必须在start()之前设置
+p.start()
+注：因子进程设置了daemon属性，主进程结束，它们就随着结束了。
+
+当多个进程需要访问共享资源的时候，Lock可以用来避免访问的冲突。
+两种上锁方式：
+def worker_with(lock, f):
+    with lock:			直接使用 with lock:
+        fs = open(f, 'a+')
+        n = 10
+        while n > 1:
+            fs.write("Lockd acquired via with\n")
+            n -= 1
+        fs.close()
+ 
+def worker_no_with(lock, f):
+    lock.acquire()		这里调用锁
+    try:
+        fs = open(f, 'a+')
+        n = 10
+        while n > 1:
+            fs.write("Lock acquired directly\n")
+            n -= 1
+        fs.close()
+    finally:
+        lock.release()	      最后记得释放锁
+
+lock = multiprocessing.Lock()
+
+
+Semaphore用来控制对共享资源的访问数量，例如池的最大连接数：
+
+import multiprocessing
+import time
+def worker(s, i):
+    s.acquire()
+    print(multiprocessing.current_process().name + "acquire");
+    time.sleep(i)
+    print(multiprocessing.current_process().name + "release\n");
+    s.release()
+ 
+if __name__ == "__main__":
+    s = multiprocessing.Semaphore(2)
+    for i in range(5):
+        p = multiprocessing.Process(target = worker, args=(s, i*2))
+        p.start()
+
+Event用来实现进程间同步通信：
+e=multiprocessing.Event()
+e.wait()	一直等待，直到调用 e.set()唤醒，才继续往下执行
+e.wait(带秒数)	等到多少秒够，继续往下执行
+e.is_set()   返回True或False   返回e是否调用了set()方法
+
+Queue是多进程安全的队列，可以使用Queue实现多进程之间的数据传递。------>blocked默认值为True
+put方法用以插入数据到队列中，blocked和timeout
+get方法可以从队列读取并且删除一个元素。同样，get方法有两个可选参数：blocked和timeout
+
+def writer_proc(q):      
+    try:         
+        q.put(1, block = False) 
+    except:         
+        pass   
+ 
+def reader_proc(q):      
+    try:         
+        print q.get(block = False) 
+    except:         
+        pass
+
+q = multiprocessing.Queue()
+writer = multiprocessing.Process(target=writer_proc, args=(q,))  
+writer.start()   
+reader = multiprocessing.Process(target=reader_proc, args=(q,))  
+reader.start()  
+
+输出：
+>>>1
+
+Pipe：可以用于进程间通信
+Pipe方法返回(conn1, conn2)代表一个管道的两个端。Pipe方法有duplex参数，如果duplex参数为True(默认值)，那么这个管道是全双工模式，也就是说conn1和conn2均可收发，即两者可以理解成是没有顺序关系的，都可以当成发送或者接受的,但是不能任意一个同时是发又是收。duplex为False，conn1只负责接受消息，conn2只负责发送消息，两者是有顺序关系的，注意。
+send和recv方法分别是发送和接受消息的方法。例如，在全双工模式下，可以调用conn1.send发送消息，conn1.recv接收消息。如果没有消息可接收，recv方法会一直阻塞。如果管道已经被关闭，那么recv方法会抛出EOFError。 
+
+
+Pool
+在利用Python进行系统管理的时候，特别是同时操作多个文件目录，或者远程控制多台主机，并行操作可以节约大量的时间。
+Pool可以提供指定数量的进程，供用户调用，当有新的请求提交到pool中时，如果池还没有满，那么就会创建一个新的进程用来执行该请求；但如果池中的进程数已经达到规定最大值，那么该请求就会等待，直到池中有进程结束，才会创建新的进程来它。
+
+使用进程池，但不关注结果！！！！如下：
+pool = multiprocessing.Pool(processes = 3) #大写，注意！！
+for i in xrange(4):
+        msg = "hello %d" %(i)
+        pool.apply_async(func, (msg, ))
+pool.close()
+pool.join()   #调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束
+
+函数解释：
+apply_async(func[, args[, kwds[, callback]]]) 它是非阻塞，apply(func[, args[, kwds]])是阻塞的（理解区别，看例1例2结果区别）
+区别：非阻塞的话，各个进程间互不影响，各自执行，没有先后顺序，而阻塞的话，后面加入的进程会等待前面的进程执行完毕后，再开始执行
+close()    关闭pool，使其不在接受新的任务。
+terminate()    结束工作进程，不在处理未完成的任务。
+join()    主进程阻塞，等待子进程的退出， join方法要在close或terminate之后使用。
+
+使用进程池，并关注结果！！！如下：
+import multiprocessing
+import time
+def func(msg):
+    print "msg:", msg
+    time.sleep(3)
+    print "end"
+    return "done" + msg
+ 
+if __name__ == "__main__":
+    pool = multiprocessing.Pool(processes=4)
+    result = []
+    for i in xrange(3):
+        msg = "hello %d" %(i)
+        result.append(pool.apply_async(func, (msg, )))
+    pool.close()
+    pool.join()
+    for res in result:
+        print (res.get())
+
+
+
+python中import操作：
+假设当前项目文件结构如下：
+pack_1:
+  test1.py
+  test2.py
+pack_2:
+  test3.py
+  test4.py
+main.py
+
+当执行main.py时，编译器会检查是否含有语法错误，检查的范围是：以main文件为根节点，逐层往下进行分解（比如main中调用了test1和test3,test3中又调用了test2和test1），只检查有调用到的文件（像test4就不会检查），且不会重复检查，比如这个例子中test1已经检查过一次了，当分解到test3中，发现有调用test1，不会再次对test1进行语法检查，所以也就导致所有被调用的文件中，声明在最外层的变量(或语句)只会创建一次(或执行一次)
+
+
+
+python日志，尽量不要使用print语句进行日志记录
+组成
+主要分为四个部分：
+Loggers：提供应用程序直接使用的接口
+Handlers：将Loggers产生的日志传到指定位置
+Filters：对输出日志进行过滤
+Formatters：控制输出格式
+
+python 的标准日志模块
+可供选择的重要性级别debug、info、warning、error 以及 critical。通过赋予 logger 或者 handler 不同的级别，你就可以只输出错误消息到特定的记录文件中，或者在调试时只记录调试信息，默认级别是warning。
+
+1.简单的将日志打印到屏幕
+import logging
+logging.debug('This is debug message')
+logging.info('This is info message')
+logging.warning('This is warning message')
+默认情况下，logging将日志打印到屏幕，日志级别大于等于WARNING时；
+日志级别大小关系为：CRITICAL > ERROR > WARNING > INFO > DEBUG > NOTSET，当然也可以自己定义日志级别。
+2.通过logging.basicConfig函数对日志的输出格式及方式做相关配置
+logging.basicConfig函数各参数:
+filename: 指定日志文件名
+filemode: 和file函数意义相同，指定日志文件的打开模式，'w'或'a'
+format: 指定输出的格式和内容，format可以输出很多有用信息，如上例所示:
+ %(levelno)s: 打印日志级别的数值
+ %(levelname)s: 打印日志级别名称
+ %(pathname)s: 打印当前执行程序的路径，其实就是sys.argv[0]
+ %(filename)s: 打印当前执行程序名
+ %(funcName)s: 打印日志的当前函数
+ %(lineno)d: 打印日志的当前行号
+ %(asctime)s: 打印日志的时间
+ %(thread)d: 打印线程ID
+ %(threadName)s: 打印线程名称
+ %(process)d: 打印进程ID
+ %(message)s: 打印日志信息
+ %(name)s：日志名字
+datefmt: 指定时间格式，同time.strftime()
+level: 设置日志级别,即写入log文件的级别，默认为logging.WARNING
+stream: 指定将日志的输出流，可以指定输出到sys.stderr,sys.stdout或者文件，默认输出到sys.stderr，当stream和filename同时指定时，stream被忽略
+如：logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='myapp.log',
+                    filemode='w')
+的输出样式为： Mon, 25 Sep 2017 16:57:06 first_log.py[line:12] DEBUG This is debug message
+日志写入文件的默认方式是‘a’，也就是追加，如果想覆盖文件，则使用如上图那样，使用filemode='w'。
+logging有一个日志处理的主对象，其它处理方式都是通过addHandler添加进去的	logging.getLogger('').addHandler(Rthandler)
+如：
+#定义一个RotatingFileHandler，最多备份5个日志文件，每个日志文件最大10M，会回滚，当记录满时
+Rthandler = RotatingFileHandler('myapp.log', maxBytes=10*1024*1024,backupCount=5)
+backupCount: 表示日志文件的保留个数，及当单个文件存满，存到新文件时，旧文件的保留个数
+
+Rthandler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+Rthandler.setFormatter(formatter)
+logging.getLogger('').addHandler(Rthandler)
+
+logging的几种handle方式如下：
+logging.StreamHandler: 日志输出到流，可以是sys.stderr、sys.stdout或者文件
+logging.FileHandler: 日志输出到文件
+日志回滚方式，实际使用时用RotatingFileHandler和TimedRotatingFileHandler
+logging.handlers.BaseRotatingHandler
+logging.handlers.RotatingFileHandler
+logging.handlers.TimedRotatingFileHandler
+logging.handlers.SocketHandler: 远程输出日志到TCP/IP sockets
+logging.handlers.DatagramHandler:  远程输出日志到UDP sockets
+logging.handlers.SMTPHandler:  远程输出日志到邮件地址
+logging.handlers.SysLogHandler: 日志输出到syslog
+logging.handlers.NTEventLogHandler: 远程输出日志到Windows NT/2000/XP的事件日志
+logging.handlers.MemoryHandler: 日志输出到内存中的制定buffer
+logging.handlers.HTTPHandler: 通过"GET"或"POST"远程输出到HTTP服务器
+由于StreamHandler和FileHandler是常用的日志处理方式，所以直接包含在logging模块中，而其他方式则包含在logging.handlers模块中
+
+
+展示了如何一步步构建
+LOG_FILE = 'tst.log'  
+handler = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes = 1024*1024, backupCount = 5) # 实例化handler   
+fmt = '%(asctime)s - %(filename)s:%(lineno)s - %(name)s - %(message)s'  
+formatter = logging.Formatter(fmt)   # 实例化formatter  
+handler.setFormatter(formatter)      # 为handler添加formatter  
+logger = logging.getLogger('tst')    # 获取名为tst的logger,空或''表root,可以认为是一个身份，表示是谁写入的,通过%(name)s，可以获取到身份名，及tst
+logger.addHandler(handler)           # 为logger添加handler  
+logger.setLevel(logging.DEBUG)  
+logger.info('first info message')  
+logger.debug('first debug message')  
+
+
+
+logging可以采用配置文件进行配置
+
+import logging  
+import logging.config  
+logging.config.fileConfig("logging.conf")    # 采用配置文件  
+# create logger  
+logger = logging.getLogger("simpleExample")  #设置身份，表示是谁写入的    
+# "application" code  
+logger.debug("debug message")  
+logger.info("info message")  
+logger.warn("warn message")  
+logger.error("error message")  
+logger.critical("critical message") 
+
+以下是配置文件: logging.conf
+[loggers]  
+keys=root,main  
+  
+[handlers]  
+keys=consoleHandler,fileHandler  
+  
+[formatters]  
+keys=fmt  
+  
+[logger_root]  
+level=DEBUG  
+handlers=consoleHandler  
+  
+[logger_main]  
+level=DEBUG  
+qualname=main  
+handlers=fileHandler  
+  
+[handler_consoleHandler]  
+class=StreamHandler  
+level=DEBUG  
+formatter=fmt  
+args=(sys.stdout,)  
+  
+[handler_fileHandler]  
+class=logging.handlers.RotatingFileHandler  
+level=DEBUG  
+formatter=fmt  
+args=('tst.log','a',20000,5,)  
+  
+[formatter_fmt]  
+format=%(asctime)s - %(name)s - %(levelname)s - %(message)s  
+datefmt= 	//注意，最后是一个等号，没有数值的！！！
+
+在指定handler的配置时，class是具体的handler类的类名，可以是相对logging模块或是全路径类名，比如需要RotatingFileHandler，则class的值可以为：RotatingFileHandler或者logging.handlers.RotatingFileHandler。args就是要传给这个类的构造方法的参数，就是一个元组
+
+这里还要明确一点，logger对象是有继承关系的，比如名为a.b和a.c的logger都是名为a的子logger，并且所有的logger对象都继承于root。如果子对象没有添加handler等一些配置，会从父对象那继承。这样就可以通过这种继承关系来复用配置。
+
+在python下，获取当前执行主脚本的方法有两个：sys.argv[0]和__file__。即代码所在的文件位置，不会因为import而影响，有相对和绝对两种区别，具体百度
+
+基本上所有的Web框架都是以下的流程（以Tornado为例）：　　
+准备阶段
+　　加载配置文件
+　　加载路由映射  application = tornado.web.Application([(r"/index", MainHandler),])
+　　创建socket  
+循环阶段
+　　类似socket Server不断的循环监听文件句柄，当有请求过来的时候，根据用户的请求方法来来判断是什么请求，在通过反射来执行相应的函数或类
+

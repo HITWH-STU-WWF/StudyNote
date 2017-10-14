@@ -1,0 +1,69 @@
+import textwrap  
+import tornado.httpserver   
+import tornado.ioloop   
+import tornado.options   
+import tornado.web   
+from tornado.options import define, options   
+define(“port”, default=8000, help=”run on the given port”, type=int)	//这个8000表示我们要使用的端口无法使用时，使用8000作为我们的端口   
+class ReverseHandler(tornado.web.RequestHandler):     //继承自requesthandler类，用于处理请求————里面有get函数，因此是处理get请求
+    def get(self, input):   
+        self.write(input[::-1])
+
+class WrapHandler(tornado.web.RequestHandler):		//处理post请求   
+    def post(self):   
+        text = self.get_argument(‘text’)   
+        width = self.get_argument(‘width’, 40)   
+        self.write(textwrap.fill(text, width))
+
+if __name__ == ”__main__“:   
+    tornado.options.parse_command_line()   
+    app = tornado.web.Application(   
+        handlers=[   
+            (r"/reverse/(\w+)", ReverseHandler),	//后面的(\w+)表示reverse/后面跟着的内容（设为s）作为get函数的参数，在该例子中及是 input=s	
+							//添加不同请求对应的处理函数   
+            (r"/wrap", WrapHandler)   
+        ]   
+    )   
+    http_server = tornado.httpserver.HTTPServer(app)   
+    http_server.listen(8000)  		//这里一般设置为我们要使用的端口 
+    tornado.ioloop.IOLoop.instance().start()
+
+
+class FrobHandler(tornado.web.RequestHandler):   //一个请求类里面可有多个处理函数
+    def head(self, frob_id):   
+        frob = retrieve_from_db(frob_id)   
+        if frob is not None:   
+            self.set_status(200)   
+        else:   
+            self.set_status(404)   
+    def get(self, frob_id):   
+        frob = retrieve_from_db(frob_id)   
+        self.write(frob.serialize())
+
+
+class IndexHandler(tornado.web.RequestHandler):   
+    def get(self):   
+        greeting = self.get_argument(‘greeting’, ’Hello’)   
+        self.write(greeting + ’, friendly user!’)   
+    def write_error(self, status_code, **kwargs):   	//该函数用于重写当响应错误时的页面
+        self.write(“Gosh darnit, user! You caused a %d error.” % status_code)
+
+
+在tornado的源码中,默认执行Handler的get/post等方法之前默认会执行 initialize方法，所以可以通过自定义的方式使得所有请求在处理前执行操作.
+
+
+进行网页请求
+client = AsyncHTTPClient()
+resp = yield client.fetch("https://api.github.com/users")
+if resp.code == 200:
+
+
+用了asynchronous的装饰器你的耗时的函数也需要执行异步
+否则转换无效,仍然是同步阻塞
+
+
+
+
+
+
+

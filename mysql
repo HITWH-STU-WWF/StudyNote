@@ -1,0 +1,247 @@
+mysql数据库的连接记得表的字符编码应该与该表所属数据库的编码相同
+ALTER TABLE `test` DEFAULT CHARACTER SET utf8;  修改编码，table改成database即可修改数据库编码
+show variables like 'character_set_database';  	查看当前数据库编码
+create database <数据库名> character set utf8;
+
+修改字段编码格式
+alter table <表名> change <字段名> <字段名> <类型> character set utf8;
+alter table user change username username varchar(20) character set utf8 not null;
+
+
+
+show create table tb_name; 查看表结构，可以看到具体编码
+describle tb_name; 查看表的结构，比较简洁的
+SHOW COLUMNS in tb_name; 　　　　//也可以
+
+
+在A列后面插入C列
+ALTER TABLE TESTTABLE ADD COLUMN C INT DEFAULT 0 AFTER A;
+
+
+修改表：
+>ALTER TABLE tb_name ADD COLUMN address varchar(80) NOT NULL;
+
+　　　　>ALTER TABLE tb_name DROP address;
+
+　　　　>ALTER TABLE tb_name CHANGE score score SMALLINT(4) NOT NULL;
+
+INSERT INTO tb_name(id,name,score)VALUES(NULL,'张三',140),(NULL,'张四',178),(NULL,'张五',134);（这里的id是自动增加的，所以可以设为null）
+
+指定更新数据：
+　　　　>UPDATE tb_name SET score=189 WHERE id=2;
+
+　　　　>UPDATE tablename SET columnName=NewValue [ WHERE condition ]
+
+
+　1、删除数据：
+　　　　>DELETE FROM tb_name WHERE id=3;
+
+SELECT * FROM tb_name WHERE id=3;
+
+
+
+3、相关条件控制符： 
+
+　　　　=、>、<、<>、IN(1,2,3......)、BETWEEN a AND b、NOT
+
+　　　　AND 、OR
+
+　　　　Linke()用法中      %  为匹配任意、  _  匹配一个字符（可以是汉字）
+
+　　　　IS NULL 空值检测
+
+
+删除表里数据
+-- 清空全部数据，不写日志，不可恢复，速度极快
+truncate table 表名;
+ 
+-- 清空全部数据，写日志，数据可恢复，速度慢
+delete from 表名
+
+
+
+以下为peewee的内容
+db  =  SqliteDatabase （'people.db' ）//创建数据库people，操作时用db代替
+class  Person （Model ）：
+    name  =  CharField （）
+    birthday  =  DateField （）
+    is_relative  =  BooleanField （）
+
+    class  Meta ：
+        database  =  db  ＃此模型使用“people.db “数据库。
+class  Pet （Model ）：
+    owner  =  ForeignKeyField （Person ， related_name = 'pets' ）
+    name  =  CharField （）
+    animal_type  =  CharField （）
+
+    class  Meta ：
+        database  =  db  ＃此模型使用“people.db”数据库
+
+
+db.connect()
+db.create_tables([ Person,Pet])
+
+存储数据
+我们将使用save()和create()方法来添加和更新记录
+uncle_bob = Person(name='Bob', birthday=date(1960, 1, 15), is_relative=True)
+uncle_bob.save()//将数据存入
+调用save()时，返回修改的行数。是行数不是该数据所处的行数
+
+grandma = Person.create(name='Grandma', birthday=date(1935, 3, 1), is_relative=True)
+//是用create直接存入数据库
+
+
+修改
+要更新一行，请修改模型实例并调用save()以保留更改。
+grandma.name = 'Grandma L.'
+grandma.save() 		//这种方法适用于该模型实例具有主键
+
+p = User.update(collections=newcollections).where(User.username == username)
+p.execute()		//这种方法试用于该模型实例不含有主键
+
+删除
+herb_mittens = Pet.create(owner=herb, name='Mittens', animal_type='cat')
+herb_mittens.delete_instance() //删除该行
+返回值delete_instance()是从数据库中删除的行数。是行数不是该数据所处的行数
+
+
+数据检索
+
+获取单个记录
+我们从数据库中检索奶奶的记录。要从数据库获取单个记录，请使用SelectQuery.get()：
+grandma = Person.select().where(Person.name == 'Grandma L.').get()
+我们也可以使用等效的简写Model.get()：
+grandma = Person.get(Person.name == 'Grandma L.')
+
+
+
+记录清单
+列出数据库中的所有人：
+for person in Person.select():
+	print person.name, person.is_relative
+
+查看所有类型是猫的宠物
+query = Pet.select().where(Pet.animal_type == 'cat')
+for pet in query:
+     print pet.name, pet.owner.name
+
+以前的查询有一个很大的问题：因为我们正在访问pet.owner.name，并且我们没有在我们的原始查询中选择这个值，所以peewee将不得不执行一个额外的查询来检索宠物的所有者。这种行为被称为N + 1，通常应该避免
+我们可以通过选择Pet和Person来添加联接来避免额外的查询
+>>> query = (Pet
+...          .select(Pet, Person)
+...          .join(Person)
+...          .where(Pet.animal_type == 'cat'))
+>>> for pet in query:
+...     print pet.name, pet.owner.name
+
+
+让我们获取Bob拥有的所有宠物：
+for pet in Pet.select().join(Person).where(Person.name == 'Bob'):
+...     print pet.name
+
+由于我们已经有一个对象代表Bob，我们可以这样做
+ for pet in Pet.select().where(Pet.owner == uncle_bob):
+...     print pet.name
+
+让我们确保这些按字母顺序排列，通过添加一个order_by()子句：
+for pet in Pet.select().where(Pet.owner == uncle_bob).order_by(Pet.name):
+...     print pet.name
+
+让我们列出所有的人和他们的宠物的一些信息：
+>>> for person in Person.select():
+...     print person.name, person.pets.count(), 'pets'
+...     for pet in person.pets:		#这边的person.pets就是上面在定义pet类时 owner=ForeignKeyField（Person ， related_name = 'pets' ）中的pets
+...         print '    ', pet.name, pet.animal_type
+
+我们遇到了N + 1查询行为的典型例子。我们可以通过执行JOIN并聚合记录来避免这种情况：
+subquery = Pet.select(fn.COUNT(Pet.id)).where(Pet.owner == Person.id)
+>>> query = (Person
+...          .select(Person, Pet, subquery.alias('pet_count'))
+...          .join(Pet, JOIN.LEFT_OUTER)
+...          .order_by(Person.name))
+
+>>> for person in query.aggregate_rows():  # Note the `aggregate_rows()` call.
+...     print person.name, person.pet_count, 'pets'
+...     for pet in person.pets:
+...         print '    ', pet.name, pet.animal_type
+
+
+
+python -m pwiz -e mysql -H localhost -p 3306 -u root -P kkd93kd  数据库名 > filename.py
+
+
+
+mysql查询优化：
+保证在实现功能的基础上，尽量减少对数据库的访问次数(可以用缓存保存查询结果，减少查询次数)；
+通过搜索参数，尽量减少对表的访问行数,最小化结果集，从而减轻网络负担；
+能够分开的操作尽量分开处理，提高每次的响应速度；在数据窗口使用SQL时，尽量把使用的索引放在选择的首列；
+算法的结构尽量简单；在查询时，不要过多地使用通配符如SELECT * FROM T1语句，要用到几列就选择几列如：SELECTCOL1,COL2 FROM T1；
+
+sql查询优化最基本：索引，避免全表扫描，以及一些细节使用也很重要
+  1.对查询进行优化，要尽量避免全表扫描，首先应考虑在 where 及 order by 涉及的列上建立索引。
+  2.应尽量避免在 where 子句中对字段进行 null 值判断，否则将导致引擎放弃使用索引而进行全表扫描
+最好不要给数据库留NULL，尽可能的使用 NOT NULL填充数据库
+备注、描述、评论之类的可以设置为 NULL，其他的，最好不要使用NULL
+
+在peewee模块中，数据库模型中的内部类class Meta：中的database属性，表示用哪个数据库连接进行操作！！！！
+
+数据库实例：（像在peewee中调用 my_database=MySQLDatabase(....)创建的）
+数据库连接（或叫数据库实例）：通常来说，数据库连接就是一个socket的连接。一个数据连接就是一个可以上传 可以下载的数据通道，一般是一对读写数据流的形式。所有只创建一个数据库连接，无法进行并发查询等操作！！！！如果想进行并发操作，就应该创建多个数据库连接或使用线程池！！！！！
+peewee 的连接池，使用时需要显式的关闭连接，原因有如下两点：
+	1、若没有关闭连接，则每次进行操作都会创建新的连接，则连接池很容易就满了，抛出Exceeded maximum connections错误	
+	2、MySQL也是有 timeout 的，如果一个连接长时间没有请求的话，MySQL Server 就会关闭这个连接
+连接池的使用，具体看代码！！！！
+db = PooledMySQLDatabase(
+    database='school',		#数据库名称
+    max_connections=32,		#最大连接数
+    stale_timeout=300,  # 允许单次连接使用的时间，单位秒  5 minutes，None等于没有时间限制.
+    timeout=300,	#当有新的连接到来时，若连接池已满，且阻塞300秒后还是满的话，抛出异常，若要无期限的阻塞，直到有连接可用时，则设置为0
+    user='root',
+    host='127.0.0.1',
+    passwd='wf520..',
+    )
+
+class MyBaseModel(Model):
+    class Meta:
+        database = db
+
+with db.execution_context():	#使用完毕之后，自动关闭连接
+	数据库操作部分的代码
+
+要对mysql进行并发操作时，应该考虑锁的机制，切记！！！！！
+mysql提供读锁和写锁，读锁之上可以再加读锁，不能加写锁，而写锁之上不能加任何锁。也就是说，读锁是共享的，写锁是排他的。
+根据锁的粒度，分为表锁和行锁
+特别注意：mysql支持不同的事务隔离级别，隔离级别越高，锁的粒度越大，也就是锁的内容越多。
+死锁，mysql在事务中，InnoDB会根据事务隔离级别自动锁定，而释放是在事务commit或者rollback的时候才释放。这就会存在死锁的情况，但mysql会自己检测出这种死锁
+
+
+用法示例：sudo mysqldump -u root -p school stu_transaction_record > stu_transaction_record.sql
+1、从mysql中导出数据库
+命令为：mysqldump -h主机-u用户名-p 数据库名> 导出的数据库名.sql 
+导出的内容为数据库结构和数据库中的数据
+2、从mysql中导出数据库中指定的表
+命令为： mysqldump -h主机-u用户名-p 数据库名 表名> 导出的数据库名表名.sql 
+导出的内容为数据的表结构和表内容
+3、从mysql中导出数据库 库结构（不包含数据）
+命令为：mysqldump -h 主机 -u 用户名 -p -d –add-drop-table 数据库名 > 数据库名.sql
+4、从mysql中导出数据库表 表结构（不包含数据）
+命令为： mysqldump -h主机-u用户名-p -d –add-drop-table 数据库名 表名> 导出的数据库名表名.sql
+5、mysql导入数据库sql文件
+登录mysql，建立数据库，使用该数据。然后执行sql语句：source 路径/文件名.sql
+总结：在导入数据库时，一定要先建立数据库。因为我们导出的数据库sql文件中不包含建立数据库的语句。
+
+	
+| connect_timeout             | 10       |
+| delayed_insert_timeout      | 300      |
+| have_statement_timeout      | YES      |
+| innodb_flush_log_at_timeout | 1        |
+| innodb_lock_wait_timeout    | 50       |
+| innodb_rollback_on_timeout  | OFF      |
+| interactive_timeout         | 28800    |
+| lock_wait_timeout           | 31536000 |
+| net_read_timeout            | 30       |
+| net_write_timeout           | 60       |
+| hit_wf      		      | 31536000 |
+| stu_hit_qwe         	      | 60       |
+| wait_timeout                | 28800    |
++-----------------------------+---------

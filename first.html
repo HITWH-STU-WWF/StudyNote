@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+<style>
+body {
+ margin-top:0px;
+ margin-right:0px;
+ margin-bottom:0px;
+ margin-left:0px;
+ background-image:url("http://img01.taopic.com/160917/240401-16091FR63824.jpg");
+ background-repeat:no-repeat;
+ background-position:top;
+ background-attachment:fixed;
+}
+.center
+{
+  margin-left:auto;
+  margin-right:auto;
+  width:100%;
+  text-align:center;
+}
+</style>
+<script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js">		
+</script>
+<script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+</head>
+<body>
+	<div class="center" id="app">
+	<h1>欢迎登录</h1>
+	<form action="">
+	Username: <input id="name" type="text" name="user" placeholder="请输入学号/工号" ><br>
+	<br>
+	Password: <input id="pass" type="password" name="password"><br><br>
+	<input calss="test" type="radio" name="identity" value="student" checked>学生  
+	<input type="radio" name="identity" value="teacher">教师  
+	<input type="radio" name="identity" value="manager">管理员<br><br>
+	<button type="button" v-on:click="login" style="width:100px;height:40px;" >登录<br>
+	</form>
+	<p id="demo"></p>
+	</div>
+
+<script>
+new Vue({
+  el: '#app',
+  data: {
+    count:1
+  },
+	methods:{
+	login:function(){
+	var name= document.getElementById("name").value;
+	var pass=document.getElementById("pass").value;
+	var mydata={"name":name,"pwd":pass};
+	$.ajax({
+	url:"http://localhost:8000/login",
+				type:'POST',
+				data:mydata,
+            	
+            	success:function (data) {
+                alert(data)
+            	}.bind(this),
+            	error:function(){
+                	alert('获取数据失败');
+            	}
+})
+	
+	}
+}
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+基础语法： $(selector).action()
+美元符号定义 jQuery
+选择符（selector）"查询"和"查找" HTML 元素
+jQuery 的 action() 执行对元素的操作
+实例:
+$(this).hide() - 隐藏当前元素
+$("p").hide() - 隐藏所有 <p> 元素
+$("p.test").hide() - 隐藏所有 class="test" 的 <p> 元素 		$(".test").hide()  隐藏所有
+$("#test").hide() - 隐藏所有 id="test" 的元素
+
+所有 jQuery 函数位于一个 document ready 函数中：
+$(document).ready(function(){
+ 
+   // 开始写 jQuery 代码...
+	所有的函数都放里面
+ 
+});
+这是为了防止文档在完全加载（就绪）之前运行 jQuery 代码
+简洁写法（与以上写法效果相同）:
+$(function(){
+ 
+   // 开始写 jQuery 代码...
+	所有的函数都放里面
+
+ 
+});
+
+
+ $(":button") 可以选取所有 type="button" 的 <input> 元素 和 <button> 元素，如果去掉冒号，$("button")只能获取 <button> 元素。
+
+
+通过 jQuery，您可以使用 toggle() 方法来切换 hide() 和 show() 方法。
+$(selector).toggle(speed,callback);
+可选的 speed 参数规定隐藏/显示的速度，可以取以下值："slow"、"fast" 或毫秒。	如果写入的是数字，则代表是毫秒，slow和fast应该带双引号
+
+
+$("#test").text();
+$("#test").html();
+$("#test").val(); //获取表单中填写的值,密码栏也行
+上面三个都也都可以用来设置值，直接在括号里写上要设置的值即可,如：text("Hello world!");  记得加上双引号
+$("#runoob").attr("href");	//获取属性值，如href，id，class等，记得加双引号
+$("#runoob").attr("href","http://www.runoob.com/jquery");	//attr 用于修改属性值的方法,可以同时修改多个属性值，具体用法上菜鸟教程查
+
+
+
+用于添加新内容的四个 jQuery 方法：
+append() - 在被选元素的结尾插入内容
+prepend() - 在被选元素的开头插入内容
+after() - 在被选元素之后插入内容
+before() - 在被选元素之前插入内容
+
+
+
+如需删除元素和内容，一般可使用以下两个 jQuery 方法：
+remove() - 删除被选元素（及其子元素）
+empty() - 从被选元素中删除子元素
+
+
+addClass() - 向被选元素添加一个或多个类
+removeClass() - 从被选元素删除一个或多个类
+toggleClass() - 对被选元素进行添加/删除类的切换操作
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

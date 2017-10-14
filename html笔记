@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>页面标题</title>
+	
+</head>
+<body>
+	内容
+</body>
+</html>
+
+<p>段落</p>	换产生空行，及新段落
+<h1>标题</h1>   可由h1到h6
+<a href="http://www.runoob.com">此处填写该链接的名字</a>
+<img src="/images/logo.png" width="258" height="39" />   图片
+<br/>或者<br>		换行
+<hr>		添加分割行，及水平线
+html属性，有需要具体了解一下
+<!-- 这是一个注释 -->	用于在html文件中添加注释
+<p>这个<br>段落<br>演示了分行的效果</p>  不产生新的空行
+
+浏览器会忽略了源代码中的排版（省略了多余的空格和换行）
+
+<b>加粗文本</b>
+<i>斜体文本</i>
+<code>电脑自动输出</code>
+这是 <sub> 下标</sub> 和 <sup> 上标</sup>
+
+<a href="url">链接文本</a>
+提示: "链接文本" 不必一定是文本。图片或其他 HTML 元素都可以成为链接。
+
+<a href="http://www.runoob.com/" target="_blank">访问菜鸟教程!</a>
+将 target 属性设置为 "_blank", 链接将在新窗口打开
+不设置的话，直接在当前窗口跳转
+
+<a id="tips">有用的提示部分</a> 
+<a href="#tips">访问有用的提示部分</a> 
+
+<head> 		定义了文档的信息
+<title> 	定义了文档的标题
+<base> 		定义了页面链接标签的默认链接地址
+<link> 		定义了一个文档和外部资源之间的关系
+<meta> 		定义了HTML文档中的元数据
+<script> 	定义了客户端的脚本文件
+<style> 	定义了HTML文档的样式文件
+
+内联样式
+<h1 style="text-align:center;">居中对齐的标题</h1>
+
+内部样式表——放在<head>中
+<style type="text/css">
+h1 {color:red;}
+p {color:blue;}
+</style>
+
+外部样式表
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head> 
+
+
+<style> 	定义文本样式
+<link> 	定义资源引用地址
+
+<img src="pulpit.jpg" alt="Pulpit rock" width="304" height="228">
+在浏览器无法载入图像时，替换文本属性告诉读者她们失去的信息
+alt 属性用来为图像定义一串预备的可替换的文本
+
+
+表单元素是允许用户在表单中输入内容,比如：文本域(textarea)、下拉列表、单选框(radio-buttons)、复选框(checkboxes)等等。
+表单使用表单标签 <form> 来设置:
+<form>
+.
+input 元素
+.
+</form>
+
+
+文本域 用 input=""来设置
+<form action="">
+Username: <input type="text" name="user"><br>
+Password: <input type="password" name="password">
+</form>
+创建文本域，用于输入，分为普通文本域和密码域
+
+单选按钮
+<input type="radio"> 标签定义了表单单选框选项
+<form>
+<input type="radio" name="sex" value="male">Male<br>
+<input type="radio" name="sex" value="female">Female
+</form> 
+
+
+复选框（Checkboxes）
+<input type="checkbox"> 定义了复选框. 用户需要从若干给定的选择中选取一个或若干选项。
+<form>
+<input type="checkbox" name="vehicle" value="Bike">I have a bike<br>
+<input type="checkbox" name="vehicle" value="Car">I have a car
+</form> 
+
+
+
+提交按钮(Submit Button)
+<input type="submit"> 定义了提交按钮.
+当用户单击确认按钮时，表单的内容会被传送到另一个文件。表单的动作属性定义了目的文件的文件名。由动作属性定义的这个文件通常会对接收到的输入数据进行相关的处理。:
+<form name="input" action="html_form_action.php" method="get">
+Username: <input type="text" name="user">
+<input type="submit" value="Submit">
+</form> 
+
+html框架
+<iframe src="demo_iframe.htm" name="iframe_a"></iframe>
+<p><a href="http://www.runoob.com" target="iframe_a">RUNOOB.COM</a></p>
+
+
+<form action=""> 
+输入姓名: <input type="text" id="txt1" onkeyup="showHint(this.value)" />
+</form>
+做到实时相应键盘操作
+<p>提示信息: <span id="txtHint"></span></p> 
+当通过寻id来变化<p>中的内容的时候，只会更新提示信息后面的部分，提示信息不会被更新掉
+使用 <span> 元素对文本中的一部分进行标记：
+
+
+
+
+else{
+		var xmlhttp;
+	if (window.XMLHttpRequest)
+	{
+   	 	xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{
+    		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+	xmlhttp.onreadystatechange=function()
+	{
+	    if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	    	{
+     		   alert(responseText);
+    		}
+	}
+	xmlhttp.open("GET","http://121.42.9.219:8000/api/webtest?user="+name+"&pass="pass,true);
+	xmlhttp.send();
+	}
+
+
+document.getElementById("demo").innerHTML=Date();
